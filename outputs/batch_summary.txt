@@ -1,0 +1,97 @@
+======================================================================
+METRO TRAIN BATCH PROCESSING REPORT
+======================================================================
+Session Start: 2026-05-06 11:55:11
+Total Coaches Processed: 5
+
+----------------------------------------------------------------------
+COACH STATISTICS:
+----------------------------------------------------------------------
+
+Coach 1: video1.mp4
+  Frames Processed:  350
+  Total People:      4102
+  Average Density:   11.7 people/frame
+  Peak Crowding:     15 people
+  Processing Time:   50.22s
+  Speed:             7.0 FPS
+
+Coach 2: video2.mp4
+  Frames Processed:  3572
+  Total People:      39952
+  Average Density:   11.2 people/frame
+  Peak Crowding:     18 people
+  Processing Time:   538.26s
+  Speed:             6.6 FPS
+
+Coach 3: video3.mp4
+  Frames Processed:  1149
+  Total People:      7769
+  Average Density:   6.8 people/frame
+  Peak Crowding:     12 people
+  Processing Time:   253.81s
+  Speed:             4.5 FPS
+
+Coach 4: video4.mp4
+  Frames Processed:  2015
+  Total People:      16043
+  Average Density:   8.0 people/frame
+  Peak Crowding:     14 people
+  Processing Time:   752.69s
+  Speed:             2.7 FPS
+
+Coach 5: video5.mp4
+  Frames Processed:  552
+  Total People:      4793
+  Average Density:   8.7 people/frame
+  Peak Crowding:     12 people
+  Processing Time:   392.35s
+  Speed:             1.4 FPS
+
+======================================================================
+AGGREGATE STATISTICS:
+======================================================================
+Total Frames:      7638
+Total People Detected: 72659
+Average Density:   9.5 people/frame
+Total Processing Time: 1987.32s
+Overall Speed:     3.8 FPS
+
+======================================================================
+CROWD PREDICTIONS & ALERTS:
+======================================================================
+
+Coach 1: video1.mp4
+  Current Average:  12.0 people
+  Current Peak:     15 people
+  Risk Level:       MODERATE
+  Next 5 Frames:    ['12', '12', '12', '12', '12']
+  Recommendation:   MODERATE: Monitor closely
+
+Coach 2: video2.mp4
+  Current Average:  11.0 people
+  Current Peak:     18 people
+  Risk Level:       LOW
+  Next 5 Frames:    ['12', '12', '12', '12', '12']
+  Recommendation:   NORMAL
+
+Coach 3: video3.mp4
+  Current Average:  7.0 people
+  Current Peak:     12 people
+  Risk Level:       LOW
+  Next 5 Frames:    ['10', '10', '10', '10', '10']
+  Recommendation:   NORMAL
+
+Coach 4: video4.mp4
+  Current Average:  8.0 people
+  Current Peak:     14 people
+  Risk Level:       LOW
+  Next 5 Frames:    ['9', '9', '9', '9', '9']
+  Recommendation:   NORMAL
+
+Coach 5: video5.mp4
+  Current Average:  9.0 people
+  Current Peak:     12 people
+  Risk Level:       LOW
+  Next 5 Frames:    ['9', '9', '9', '9', '9']
+  Recommendation:   NORMAL

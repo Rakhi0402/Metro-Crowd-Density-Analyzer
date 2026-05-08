@@ -1,0 +1,6 @@
+coach_id,video,frames,total_people,avg_people,max_people,processing_time_sec,fps
+1,video1.mp4,350,4102,11.7,15,50.22,7.0
+2,video2.mp4,3572,39952,11.2,18,538.26,6.6
+3,video3.mp4,1149,7769,6.8,12,253.81,4.5
+4,video4.mp4,2015,16043,8.0,14,752.69,2.7
+5,video5.mp4,552,4793,8.7,12,392.35,1.4

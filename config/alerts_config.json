@@ -1,0 +1,20 @@
+{
+    "email_recipient": "operator@metro.transit.local",
+    "sms_recipient": "+1-555-0100",
+    "alert_threshold": 15,
+    "smtp": {
+        "server": "smtp.gmail.com",
+        "port": 587,
+        "sender": "alerts@metro.transit.local",
+        "username": "your_email@gmail.com",
+        "password": "your_app_password_here"
+    },
+    "twilio": {
+        "account_sid": "your_twilio_account_sid",
+        "auth_token": "your_twilio_auth_token",
+        "from_number": "+1-555-0100"
+    },
+    "slack": {
+        "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+    }
+}

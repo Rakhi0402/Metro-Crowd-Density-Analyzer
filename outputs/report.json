@@ -1,0 +1,106 @@
+{
+  "timestamp": "2026-05-06T12:28:19.547136",
+  "total_coaches": 5,
+  "total_alerts": 2,
+  "coaches": [
+    {
+      "coach_id": 1,
+      "video": "video1.mp4",
+      "current_avg": 12,
+      "current_max": 15,
+      "forecast": [
+        12,
+        12,
+        12,
+        12,
+        12
+      ],
+      "recommendation": "MODERATE: Monitor closely",
+      "risk_level": "MODERATE"
+    },
+    {
+      "coach_id": 2,
+      "video": "video2.mp4",
+      "current_avg": 11,
+      "current_max": 18,
+      "forecast": [
+        11.675999999999998,
+        11.652,
+        11.627999999999998,
+        11.604,
+        11.579999999999998
+      ],
+      "recommendation": "NORMAL",
+      "risk_level": "LOW"
+    },
+    {
+      "coach_id": 3,
+      "video": "video3.mp4",
+      "current_avg": 7,
+      "current_max": 12,
+      "forecast": [
+        10.1556,
+        10.021199999999999,
+        9.8868,
+        9.752399999999998,
+        9.617999999999999
+      ],
+      "recommendation": "NORMAL",
+      "risk_level": "LOW"
+    },
+    {
+      "coach_id": 4,
+      "video": "video4.mp4",
+      "current_avg": 8,
+      "current_max": 14,
+      "forecast": [
+        9.427079999999998,
+        9.251159999999997,
+        9.075239999999997,
+        8.899319999999998,
+        8.723399999999998
+      ],
+      "recommendation": "NORMAL",
+      "risk_level": "LOW"
+    },
+    {
+      "coach_id": 5,
+      "video": "video5.mp4",
+      "current_avg": 9,
+      "current_max": 12,
+      "forecast": [
+        9.249299999999998,
+        9.076499999999998,
+        8.903699999999999,
+        8.730899999999998,
+        8.558099999999998
+      ],
+      "recommendation": "NORMAL",
+      "risk_level": "LOW"
+    }
+  ],
+  "alerts": [
+    {
+      "time": "12:28:19",
+      "timestamp": "12:28:19",
+      "level": "critical",
+      "msg": "Coach 1 overcrowded (15)",
+      "message": "Coach 1 overcrowded (15)",
+      "coach": 1
+    },
+    {
+      "time": "12:28:19",
+      "timestamp": "12:28:19",
+      "level": "critical",
+      "msg": "Coach 2 overcrowded (18)",
+      "message": "Coach 2 overcrowded (18)",
+      "coach": 2
+    }
+  ],
+  "risk_summary": {
+    "critical": 0,
+    "high": 0,
+    "moderate": 1,
+    "low": 4
+  }
+}

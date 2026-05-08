@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Crowd Monitoring Dashboard</title>
+    <style>
+        :root {
+            --bg: #f7f9ff;
+            --surface: #ffffff;
+            --surface-soft: #f1f5ff;
+            --text: #15213a;
+            --muted: #5f6d85;
+            --accent: #4f74ff;
+            --accent-deep: #2b5bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --radius: 20px;
+            --shadow: 0 20px 50px rgba(31, 45, 110, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, rgba(79,116,255,0.18), transparent 30%),
+                        radial-gradient(circle at bottom right, rgba(255,192,69,0.16), transparent 34%),
+                        linear-gradient(180deg, #eef5ff 0%, #f7fbff 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            display: grid;
+            gap: 22px;
+        }
+
+        header {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            box-shadow: var(--shadow);
+            display: grid;
+            gap: 18px;
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 2.8vw, 2.6rem);
+            letter-spacing: -0.03em;
+        }
+
+        header .timestamp {
+            color: var(--muted);
+            font-size: 0.96rem;
+        }
+
+        .controls-panel,
+        .summary-section,
+        .content-panel,
+        .alerts-section {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+        }
+
+        .controls-panel {
+            display: grid;
+            gap: 18px;
+        }
+
+        .coach-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .coach-selector label {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .coach-selector select {
+            min-width: 260px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid #dfe5ff;
+            background: #ffffff;
+            color: var(--text);
+            font-size: 0.98rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .coach-selector select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(79,116,255,0.12);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .button-group button {
+            border: none;
+            border-radius: 16px;
+            padding: 13px 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .button-group button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(79,116,255,0.15);
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+            color: #fff;
+        }
+
+        .button-secondary {
+            background: #f6f8ff;
+            color: var(--text);
+        }
+
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .summary-card {
+            padding: 22px;
+            border-radius: 18px;
+            background: var(--surface-soft);
+            border: 1px solid #eef3ff;
+            min-height: 130px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .summary-card strong {
+            font-size: 1.6rem;
+            color: var(--text);
+        }
+
+        .summary-card span {
+            color: var(--muted);
+        }
+
+        .summary-card .summary-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .summary-card.risk-critical .summary-pill { background: rgba(220,53,69,0.12); color: var(--danger); }
+        .summary-card.risk-high .summary-pill { background: rgba(255,193,7,0.14); color: var(--warning); }
+        .summary-card.risk-moderate .summary-pill { background: rgba(23,162,184,0.14); color: var(--info); }
+        .summary-card.risk-low .summary-pill { background: rgba(40,167,69,0.14); color: var(--success); }
+
+        .content-panel {
+            display: grid;
+            gap: 24px;
+        }
+
+        #coaches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .coach-card {
+            padding: 22px;
+            border-radius: 20px;
+            background: var(--surface);
+            border: 1px solid #eef3ff;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            cursor: pointer;
+        }
+
+        .coach-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 28px rgba(79,116,255,0.12);
+        }
+
+        .coach-card h3 {
+            margin-bottom: 16px;
+        }
+
+        .coach-line {
+            display: grid;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .coach-line span {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .coach-line strong {
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .coach-detail {
+            display: none;
+            padding: 24px;
+        }
+
+        .coach-detail.active {
+            display: block;
+        }
+
+        .coach-detail h2 {
+            margin-bottom: 24px;
+            font-size: 1.4rem;
+        }
+
+        .metric {
+            padding: 18px 20px;
+            border-radius: 18px;
+            background: #f5f7ff;
+            border-left: 4px solid var(--accent);
+        }
+
+        .recommendation {
+            padding: 22px;
+            background: rgba(45, 111, 255, 0.08);
+            border-left: 5px solid var(--info);
+        }
+
+        .forecast-section {
+            padding: 20px 22px;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 5px solid var(--warning);
+        }
+
+        .forecast-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 12px;
+        }
+
+        .forecast-item {
+            border-radius: 14px;
+            padding: 12px 14px;
+            border: 1px solid #ffe7b7;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text);
+            background: var(--surface);
+        }
+
+        .alerts-section {
+            display: grid;
+            gap: 18px;
+        }
+
+        .alerts-section h2 {
+            font-size: 1.35rem;
+        }
+
+        .alert {
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: center;
+            border-radius: 18px;
+            border: 1px solid #eef3ff;
+            background: var(--surface-soft);
+        }
+
+        .alert .icon {
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef5ff;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            padding: 16px 0;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 860px) {
+            .coach-selector,
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>🚆 Metro Train Crowd Monitoring Dashboard</h1>
+                <p class="timestamp">Updated: 2026-05-06 12:28:19</p>
+            </div>
+            <p class="timestamp">Review coach crowding and risk levels across the latest batch. Click a coach card or use the filters to focus on the most important data.</p>
+        </header>
+
+        <section class="controls-panel">
+            <div class="coach-selector">
+                <label for="coach-select">Jump to coach</label>
+                <select id="coach-select" onchange="switchCoach()">
+                    <option value="">-- Select a Coach --</option>
+                    <option value="coach-1">Coach 1</option>
+<option value="coach-2">Coach 2</option>
+<option value="coach-3">Coach 3</option>
+<option value="coach-4">Coach 4</option>
+<option value="coach-5">Coach 5</option>
+
+                </select>
+            </div>
+            <div class="button-group">
+                <button class="button-primary" onclick="showAllCoaches()">Show All Coaches</button>
+                <button class="button-secondary" onclick="filterRisk('CRITICAL')">Critical</button>
+                <button class="button-secondary" onclick="filterRisk('HIGH')">High</button>
+                <button class="button-secondary" onclick="filterRisk('MODERATE')">Moderate</button>
+                <button class="button-secondary" onclick="filterRisk('LOW')">Low</button>
+            </div>
+        </section>
+
+        <section class="summary-section">
+            <div class="summary-card">
+                <strong>5</strong>
+                <span>Total Coaches Processed</span>
+            </div>
+            <div class="summary-card">
+                <strong>2</strong>
+                <span>Alerts Generated</span>
+            </div>
+            
+            <div class="summary-card risk-critical">
+                <strong>0</strong>
+                <span>Critical risk coaches</span>
+                <div class="summary-pill">CRITICAL</div>
+            </div>
+            
+            <div class="summary-card risk-high">
+                <strong>0</strong>
+                <span>High risk coaches</span>
+                <div class="summary-pill">HIGH</div>
+            </div>
+            
+            <div class="summary-card risk-moderate">
+                <strong>1</strong>
+                <span>Moderate risk coaches</span>
+                <div class="summary-pill">MODERATE</div>
+            </div>
+            
+            <div class="summary-card risk-low">
+                <strong>4</strong>
+                <span>Low risk coaches</span>
+                <div class="summary-pill">LOW</div>
+            </div>
+            
+        </section>
+
+        <section class="content-panel">
+            <div id="all-coaches" class="coach-detail active">
+                <h2>📊 All Coaches Overview</h2>
+                <div id="coaches-grid"></div>
+            </div>
+        
+        <div id="coach-1" class="coach-detail">
+            <h2>Coach 1 - video1.mp4</h2>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="label">Current Average</span>
+                    <span class="value">12.0 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Current Peak</span>
+                    <span class="value">15 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Risk Level</span>
+                    <span class="value risk">MODERATE</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Status</span>
+                    <span class="value" style="font-size: 16px; color: #ffc107;">MODERATE</span>
+                </div>
+            </div>
+            
+            <div class="recommendation">
+                <strong>Operator Recommendation:</strong>
+                <p>MODERATE: Monitor closely</p>
+            </div>
+            
+            <div class="forecast-section">
+                <strong>📈 5-Minute Forecast:</strong>
+                <div class="forecast-values">
+                    <div class="forecast-item">12</div> <div class="forecast-item">12</div> <div class="forecast-item">12</div> <div class="forecast-item">12</div> <div class="forecast-item">12</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="coach-2" class="coach-detail">
+            <h2>Coach 2 - video2.mp4</h2>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="label">Current Average</span>
+                    <span class="value">11.0 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Current Peak</span>
+                    <span class="value">18 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Risk Level</span>
+                    <span class="value risk">LOW</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Status</span>
+                    <span class="value" style="font-size: 16px; color: #28a745;">LOW</span>
+                </div>
+            </div>
+            
+            <div class="recommendation">
+                <strong>Operator Recommendation:</strong>
+                <p>NORMAL</p>
+            </div>
+            
+            <div class="forecast-section">
+                <strong>📈 5-Minute Forecast:</strong>
+                <div class="forecast-values">
+                    <div class="forecast-item">11</div> <div class="forecast-item">11</div> <div class="forecast-item">11</div> <div class="forecast-item">11</div> <div class="forecast-item">11</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="coach-3" class="coach-detail">
+            <h2>Coach 3 - video3.mp4</h2>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="label">Current Average</span>
+                    <span class="value">7.0 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Current Peak</span>
+                    <span class="value">12 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Risk Level</span>
+                    <span class="value risk">LOW</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Status</span>
+                    <span class="value" style="font-size: 16px; color: #28a745;">LOW</span>
+                </div>
+            </div>
+            
+            <div class="recommendation">
+                <strong>Operator Recommendation:</strong>
+                <p>NORMAL</p>
+            </div>
+            
+            <div class="forecast-section">
+                <strong>📈 5-Minute Forecast:</strong>
+                <div class="forecast-values">
+                    <div class="forecast-item">10</div> <div class="forecast-item">10</div> <div class="forecast-item">9</div> <div class="forecast-item">9</div> <div class="forecast-item">9</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="coach-4" class="coach-detail">
+            <h2>Coach 4 - video4.mp4</h2>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="label">Current Average</span>
+                    <span class="value">8.0 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Current Peak</span>
+                    <span class="value">14 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Risk Level</span>
+                    <span class="value risk">LOW</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Status</span>
+                    <span class="value" style="font-size: 16px; color: #28a745;">LOW</span>
+                </div>
+            </div>
+            
+            <div class="recommendation">
+                <strong>Operator Recommendation:</strong>
+                <p>NORMAL</p>
+            </div>
+            
+            <div class="forecast-section">
+                <strong>📈 5-Minute Forecast:</strong>
+                <div class="forecast-values">
+                    <div class="forecast-item">9</div> <div class="forecast-item">9</div> <div class="forecast-item">9</div> <div class="forecast-item">8</div> <div class="forecast-item">8</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="coach-5" class="coach-detail">
+            <h2>Coach 5 - video5.mp4</h2>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <span class="label">Current Average</span>
+                    <span class="value">9.0 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Current Peak</span>
+                    <span class="value">12 people</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Risk Level</span>
+                    <span class="value risk">LOW</span>
+                </div>
+                <div class="metric">
+                    <span class="label">Status</span>
+                    <span class="value" style="font-size: 16px; color: #28a745;">LOW</span>
+                </div>
+            </div>
+            
+            <div class="recommendation">
+                <strong>Operator Recommendation:</strong>
+                <p>NORMAL</p>
+            </div>
+            
+            <div class="forecast-section">
+                <strong>📈 5-Minute Forecast:</strong>
+                <div class="forecast-values">
+                    <div class="forecast-item">9</div> <div class="forecast-item">9</div> <div class="forecast-item">8</div> <div class="forecast-item">8</div> <div class="forecast-item">8</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alerts-section">
+            <h2>🚨 Recent Alerts (2)</h2>
+            
+            <div class="alert alert-critical">
+                <span class="icon">🚨</span>
+                <span class="timestamp">12:28:19</span>
+                <span class="message">Coach 1 overcrowded (15)</span>
+            </div>
+            
+            <div class="alert alert-critical">
+                <span class="icon">🚨</span>
+                <span class="timestamp">12:28:19</span>
+                <span class="message">Coach 2 overcrowded (18)</span>
+            </div>
+            
+        </div>
+        
+        <footer>
+            <p>Metro Crowd Density Tracking System | Last Updated: 2026-05-06 12:28:19</p>
+        </footer>
+    </div>
+    
+    <script>
+        const coachesData = {
+            "coach-1": {"coach_id": 1, "video": "video1.mp4", "current_avg": 12, "current_max": 15, "forecast": [12, 12, 12, 12, 12], "recommendation": "MODERATE: Monitor closely", "risk_level": "MODERATE"},
+            "coach-2": {"coach_id": 2, "video": "video2.mp4", "current_avg": 11, "current_max": 18, "forecast": [11.675999999999998, 11.652, 11.627999999999998, 11.604, 11.579999999999998], "recommendation": "NORMAL", "risk_level": "LOW"},
+            "coach-3": {"coach_id": 3, "video": "video3.mp4", "current_avg": 7, "current_max": 12, "forecast": [10.1556, 10.021199999999999, 9.8868, 9.752399999999998, 9.617999999999999], "recommendation": "NORMAL", "risk_level": "LOW"},
+            "coach-4": {"coach_id": 4, "video": "video4.mp4", "current_avg": 8, "current_max": 14, "forecast": [9.427079999999998, 9.251159999999997, 9.075239999999997, 8.899319999999998, 8.723399999999998], "recommendation": "NORMAL", "risk_level": "LOW"},
+            "coach-5": {"coach_id": 5, "video": "video5.mp4", "current_avg": 9, "current_max": 12, "forecast": [9.249299999999998, 9.076499999999998, 8.903699999999999, 8.730899999999998, 8.558099999999998], "recommendation": "NORMAL", "risk_level": "LOW"},
+        };
+        
+        function switchCoach() {
+            const selector = document.getElementById('coach-select');
+            const coachId = selector.value;
+
+            document.querySelectorAll('.coach-detail').forEach(el => el.classList.remove('active'));
+
+            if (!coachId) {
+                showAllCoaches();
+                return;
+            }
+
+            const element = document.getElementById(coachId);
+            if (element) {
+                element.classList.add('active');
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        function showAllCoaches() {
+            document.querySelectorAll('.coach-detail').forEach(el => el.classList.remove('active'));
+            document.getElementById('all-coaches').classList.add('active');
+            document.getElementById('coach-select').value = '';
+
+            const grid = document.getElementById('coaches-grid');
+            grid.innerHTML = '';
+
+            Object.entries(coachesData).forEach(([coachKey, coach]) => {
+                const risk = coach.risk_level || 'LOW';
+                const forecastValues = Array.isArray(coach.forecast) ? coach.forecast : [];
+                const forecast = forecastValues.slice(0, 5).map(p => Math.round(p)).join(', ');
+                const riskColor = risk.includes('CRITICAL') ? '#dc3545'
+                    : risk.includes('HIGH') ? '#fd7e14'
+                    : risk.includes('MODERATE') ? '#17a2b8'
+                    : '#28a745';
+                const avg = Number(coach.current_avg || 0);
+                const peak = Number(coach.current_max || 0);
+
+                const card = document.createElement('div');
+                card.className = 'coach-card';
+                card.style.borderLeft = '4px solid ' + riskColor;
+                card.onclick = () => {
+                    document.getElementById('coach-select').value = coachKey;
+                    switchCoach();
+                };
+
+                card.innerHTML =
+                    '<h3>Coach ' + coach.coach_id + '</h3>' +
+                    '<div class="coach-line"><span>Average</span><strong>' + avg.toFixed(1) + ' people</strong></div>' +
+                    '<div class="coach-line"><span>Peak</span><strong>' + peak + ' people</strong></div>' +
+                    '<div class="coach-line"><span>Risk</span><strong style="color:' + riskColor + ';">' + risk + '</strong></div>' +
+                    '<div class="coach-line"><span>Forecast</span><strong>' + forecast + '</strong></div>';
+
+                grid.appendChild(card);
+            });
+        }
+
+        function filterRisk(level) {
+            document.querySelectorAll('.coach-detail').forEach(el => el.classList.remove('active'));
+            document.getElementById('all-coaches').classList.add('active');
+            document.getElementById('coach-select').value = '';
+
+            const grid = document.getElementById('coaches-grid');
+            grid.innerHTML = '';
+
+            Object.entries(coachesData).forEach(([coachKey, coach]) => {
+                if ((coach.risk_level || 'LOW') === level) {
+                    const risk = coach.risk_level || 'LOW';
+                    const forecastValues = Array.isArray(coach.forecast) ? coach.forecast : [];
+                    const forecast = forecastValues.slice(0, 5).map(p => Math.round(p)).join(', ');
+                    const riskColor = risk.includes('CRITICAL') ? '#dc3545'
+                        : risk.includes('HIGH') ? '#fd7e14'
+                        : risk.includes('MODERATE') ? '#17a2b8'
+                        : '#28a745';
+                    const avg = Number(coach.current_avg || 0);
+                    const peak = Number(coach.current_max || 0);
+
+                    const card = document.createElement('div');
+                    card.className = 'coach-card';
+                    card.style.borderLeft = '4px solid ' + riskColor;
+                    card.onclick = () => {
+                        document.getElementById('coach-select').value = coachKey;
+                        switchCoach();
+                    };
+
+                    card.innerHTML =
+                        '<h3>Coach ' + coach.coach_id + '</h3>' +
+                        '<div class="coach-line"><span>Average</span><strong>' + avg.toFixed(1) + ' people</strong></div>' +
+                        '<div class="coach-line"><span>Peak</span><strong>' + peak + ' people</strong></div>' +
+                        '<div class="coach-line"><span>Risk</span><strong style="color:' + riskColor + ';">' + risk + '</strong></div>' +
+                        '<div class="coach-line"><span>Forecast</span><strong>' + forecast + '</strong></div>';
+                    grid.appendChild(card);
+                }
+            });
+        }
+        
+        // Initialize with all coaches view
+        showAllCoaches();
+    </script>
+</body>
+</html>
+        
