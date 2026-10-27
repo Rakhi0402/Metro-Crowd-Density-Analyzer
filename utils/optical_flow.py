@@ -1,12 +1,4 @@
-"""
-optical_flow.py
----------------
-Module for Step 3 of the IEEE 7275777 methodology.
-Tracks the spatial displacement of FAST keypoints between frame T and T+1
-using Pyramidal Lucas-Kanade (cv2.calcOpticalFlowPyrLK). 
-It calculates the magnitude and angle of the resulting motion vectors, 
-filtering out stationary noise, and maintaining temporal tracking state.
-"""
+
 
 import cv2
 import numpy as np
@@ -19,18 +11,7 @@ class LucasKanadeTracker:
     """
 
     def __init__(self, win_size: tuple[int, int] = (15, 15), max_level: int = 2, min_motion: float = 1.0, max_motion: float = 50.0):
-        """
-        Parameters
-        ----------
-        win_size : tuple[int, int]
-            Size of the search window at each pyramid level.
-        max_level : int
-            0-based maximal pyramid level number.
-        min_motion : float
-            Minimum magnitude (pixels) to be considered valid crowd movement.
-        max_motion : float
-            Maximum magnitude (pixels) to reject impossible jumps/noise.
-        """
+      
         self.lk_params = dict(
             winSize=win_size,
             maxLevel=max_level,
@@ -45,24 +26,7 @@ class LucasKanadeTracker:
         self.trail_mask: np.ndarray | None = None
 
     def track(self, current_gray: np.ndarray, new_keypoints: np.ndarray | None, frame: np.ndarray) -> tuple[np.ndarray, np.ndarray, int]:
-        """
-        Executes the Optical Flow pipeline on the current frame.
-
-        Parameters
-        ----------
-        current_gray : np.ndarray
-            The grayscale frame at T+1.
-        new_keypoints : np.ndarray | None
-            Fresh FAST keypoints. If previous points exist, we track those instead,
-            but we can use new_keypoints to replenish lost tracks.
-        frame : np.ndarray
-            The raw BGR frame used strictly as a canvas to draw visualisations.
-
-        Returns
-        -------
-        tuple[np.ndarray, np.ndarray, int]
-            (annotated_frame, valid_motion_vectors, active_flow_count)
-        """
+       
         annotated_frame = frame.copy()
         valid_vectors = np.empty((0, 4), dtype=np.float32)  # Will store (x1, y1, x2, y2)
 
@@ -137,11 +101,7 @@ class LucasKanadeTracker:
 
 
 class DenseFarnebackTracker:
-    """
-    Computes Dense Optical Flow across the entire frame.
-    Provides a motion vector for every pixel, allowing for extremely 
-    high-resolution density estimation in massive crowds.
-    """
+   
 
     def __init__(self, 
                  pyr_scale=0.5, levels=3, winsize=15, 
