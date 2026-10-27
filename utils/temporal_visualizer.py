@@ -1,9 +1,3 @@
-"""
-temporal_visualizer.py
-----------------------
-Handles stacking consecutive video frames into a 2x2 grid (Researcher View),
-matching the visualization style of IEEE crowd density papers.
-"""
 
 import cv2
 import numpy as np
@@ -19,10 +13,7 @@ class TemporalVisualizer:
         self.buffer = deque(maxlen=buffer_size)
 
     def update(self, frame: np.ndarray) -> np.ndarray:
-        """
-        Adds a new frame to the buffer and returns a 2x2 composite if buffer is full.
-        Otherwise returns the original frame.
-        """
+      
         self.buffer.append(frame.copy())
         
         if len(self.buffer) < 4:
